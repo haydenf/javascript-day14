@@ -1,14 +1,17 @@
 const BookModel = require("./../database/models/book_model");
 
-async function create(req, res) {
+const create = async (req, res) => {
     let { bookId } = req.params;
     let { body } = req.body;
 
-    let book = await BookModel.findById(bookId);
+    // find the book
+    let book = await BookModel.findById(bookId)
+        .catch(err => res.status(500).send(err));
+    // add the comments to the book
     book.comments.push({ body });
+    // save the book to the databse
 
     await book.save();
-
     res.redirect(`/books/${bookId}`);
 }
 
